@@ -10,7 +10,7 @@ AIML Professional Community Bangladesh is a volunteer-led, non-profit community.
 ---
 
 ## **Code of Conduct**  
-To ensure a respectful, inclusive, and productive environment, all members are expected to adhere to the following guidelines:  
+To ensure a respectful, inclusive, and productive environment, everyone are expected to adhere to the following guidelines:  
 
 1. **Be Respectful & Inclusive**  
    - Treat all members with kindness and respect, regardless of experience level, background, or opinions.  
@@ -43,6 +43,23 @@ To ensure a respectful, inclusive, and productive environment, all members are e
    - Refrain from engaging in political debates or sharing political views, whether valid or invalid.
    - This community is focused on AI/ML and professional growth.
 
+**This Code of Conduct applies to the following people in online and offline spaces:**
+- admins of the online space
+- maintainers
+- reviewers
+- contributors
+- Mentors
+- Guests
+- Speakers
+- staff
+- panelists
+- tutorial or workshop leaders
+- organizers
+- volunteers
+- all attendees
+- all community members
+- people invited to meetings, workshops, webinars, events, etc.
+
 ---
 
 ## **Terms & Conditions**  
@@ -72,6 +89,6 @@ By joining and participating in **AIML Professional Community Bangladesh**, you 
 
 ---
 
-By being a part of **AIML Professional Community Bangladesh**, you acknowledge that you have read, understood, and agreed to these terms, CoC, and principles. Members who violate these guidelines may be warned, muted, or removed at the discretion of the moderators.  
+By being a part of **AIML Professional Community Bangladesh**, you acknowledge that you have read, understood, and agreed to these terms, CoC, and principles. Anyone who violate these guidelines may be warned, muted, or removed at the discretion of the moderators.  
 
 Let’s build a collaborative and impactful AI/ML community together! 🚀  

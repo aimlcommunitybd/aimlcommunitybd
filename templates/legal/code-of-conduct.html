@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %} Code of Conduct | AIML Community {% endblock %}
+
+{% block header %}  
+    <header id="header" class="header d-flex align-items-center sticky-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+          <a href="index.html" class="logo d-flex align-items-center me-auto">
+            <img src="assets/img/aimlpcb-logo.png" alt="">
+          </a>
+
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+              <li><a href="{{ url_for('coc') }}" class="active">Code of Conduct</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+
+<div class="coc-container">
+  <main>
+    <div class="super-title">AI/ML Professional Community Bangladesh</div>
+
+    <h1>Code of Conduct</h1>
+
+    <section>
+      <p>
+        <strong>AI/ML Professional Community Bangladesh</strong> is a volunteer-led, non-profit community. Our focus is on strengthening the local AI/ML community and ensuring a free, open-source, and collaborative space for professional growth. We do not charge learners or pay mentors.
+      </p>
+
+      <h2>Community Goal</h2>
+      <ul>
+        <li><strong>Knowledge Sharing:</strong> Encouraging open-source contributions, sharing research, projects, and tutorials.</li>
+        <li><strong>Mentorship & Support:</strong> Organizing Q&A sessions, workshops, and mock interviews to help early-career AI/ML practitioners.</li>
+        <li><strong>Community Engagement:</strong> Facilitating discussions and arranging meetups.</li>
+        <li><strong>Research & Development:</strong> Promoting study groups and research validation.</li>
+      </ul>
+
+      <h2>Code of Conduct</h2>
+      <ol>
+        <li><strong>Be Respectful & Inclusive</strong>
+          <ul>
+            <li>Treat all members with respect regardless of background or opinion.</li>
+            <li>No discrimination, harassment, or hate speech.</li>
+          </ul>
+        </li>
+        <li><strong>Collaborate & Share Responsibly</strong>
+          <ul>
+            <li>Share accurate, open-source content with proper credit.</li>
+            <li>Avoid plagiarism.</li>
+          </ul>
+        </li>
+        <li><strong>Support & Encourage</strong>
+          <ul>
+            <li>Give constructive feedback.</li>
+            <li>Be patient with beginners.</li>
+          </ul>
+        </li>
+        <li><strong>No Spam, Promotions, or Self-Promotion</strong>
+          <ul>
+            <li>Avoid excessive self-promotion.</li>
+            <li>Projects are welcome if they provide community value.</li>
+          </ul>
+        </li>
+        <li><strong>Keep Discussions Professional</strong>
+          <ul>
+            <li>Stay on-topic in discussions.</li>
+            <li>Resolve disagreements respectfully.</li>
+          </ul>
+        </li>
+        <li><strong>Respect Privacy & Rules</strong>
+          <ul>
+            <li>Do not share personal info without consent.</li>
+            <li>Follow moderator instructions.</li>
+          </ul>
+        </li>
+        <li><strong>Conflict of Interest</strong>
+          <ul>
+            <li>Do not violate NDAs or confidentiality agreements.</li>
+          </ul>
+        </li>
+        <li><strong>Avoid Political Discussions</strong>
+          <ul>
+            <li>Focus only on AI/ML and professional topics.</li>
+          </ul>
+        </li>
+      </ol>
+
+      <p><strong>Applies to:</strong> All contributors, members, admins, guests, speakers, organizers, and event attendees.</p>
+    </section>
+
+    <h1>Terms & Conditions</h1>
+    
+    <section>
+      <p>By joining and participating in AIML Professional Community Bangladesh, you agree to the following terms:</p>
+
+      <h2>1. Consent for Recording & Publishing</h2>
+      <ul>
+        <li>You consent to being recorded during events.</li>
+        <li>Recordings may be shared on community platforms.</li>
+        <li>Turn off your camera or mic if you prefer not to be recorded.</li>
+      </ul>
+
+      <h2>2. Content Sharing & Intellectual Property</h2>
+      <ul>
+        <li>Only share content you have rights to.</li>
+        <li>Do not share confidential information.</li>
+        <li>Give proper credit in all open-source contributions.</li>
+      </ul>
+
+      <h2>3. Privacy & Data Protection</h2>
+      <ul>
+        <li>Do not share others' private info without consent.</li>
+        <li>We may collect minimal info (email/LinkedIn) for organizing events only.</li>
+      </ul>
+
+      <h2>4. Limitation of Liability</h2>
+      <ul>
+        <li>We do not offer job placement, legal, or financial services.</li>
+        <li>Advice given is based on personal experience, not professional liability.</li>
+      </ul>
+
+      <h2>5. Amendments & Updates</h2>
+      <ul>
+        <li>Terms may be updated as needed.</li>
+        <li>Members will be notified of major changes.</li>
+      </ul>
+
+      <p>By participating, you agree to our community values and rules. Violations may result in moderation actions. Let's grow together in AI/ML! 🚀</p>
+    </section>
+  </main>
+</div>
+
+{% endblock%}

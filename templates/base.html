@@ -31,6 +31,8 @@
     <!-- Additional CSS -->
     <link href="{{ url_for('assets', filename='css/coc.css') }}" rel="stylesheet">
     <link href="{{ url_for('assets', filename='css/stats.css') }}" rel="stylesheet">
+    <link href="{{ url_for('assets', filename='css/activities.css') }}" rel="stylesheet">
+
 
 </head>
 
@@ -47,6 +49,9 @@
         {% include "partial/footer.html" %}
     {% endblock %}
 
+    {% block script %}
+    {% endblock %}
+
     <!-- CDN JS Files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
@@ -55,9 +60,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/imagesloaded/5.0.0/imagesloaded.pkgd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
-
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
     <!-- Main JS File -->
     <script src="{{ url_for('assets', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('assets', filename='js/activities.js') }}"></script>
+
     
     <!-- Initialize PureCounter -->
     <script>

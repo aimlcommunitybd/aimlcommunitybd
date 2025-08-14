@@ -7,7 +7,7 @@ from app.db import get_session
 from app.models import Activity
 
 
-app = Flask(__name__,template_folder="templates",)
+app = Flask(__name__)
 
 
 @app.route('/')
@@ -19,7 +19,7 @@ def home():
         'github': 'https://github.com/pythonbangladesh'
     }
     with get_session() as session:
-        activities = session.query(Activity).all()
+        activities = session.query(Activity).order_by(Activity.event_date.desc()).all()
 
     return render_template('index.html', social_links=SOCIAL_LINKS, activities=activities)
 

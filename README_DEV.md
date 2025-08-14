@@ -18,3 +18,6 @@ for file in assets/img/activities/*.png; do
     convert "$file" -quality 80 -resize 800x600 "${file%.*}.jpg" && rm "$file"
 done
 ```
+
+### resource
+we can this doc for GitHub Page DNS management: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site?platform=linux

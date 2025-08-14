@@ -6,4 +6,6 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "flask>=3.1.1",
+    "sqlmodel>=0.0.24",
+    "structlog>=25.4.0",
 ]

@@ -1,2 +1,2 @@
 run:
-	uv run python main.py
+	PYTHONPATH=src uv run python src/app/main.py

@@ -1,10 +1,13 @@
+import os
+
 from flask import Flask, render_template, send_from_directory
 from flask import redirect
 
-import os
+from app.db import get_session
+from app.models import Activity
 
 
-app = Flask(__name__,)
+app = Flask(__name__)
 
 
 @app.route('/')
@@ -15,7 +18,10 @@ def home():
         'whatsapp': 'https://whatsapp.com/channel/0029VbAf0s70rGiMzJfG4u2B',
         'github': 'https://github.com/pythonbangladesh'
     }
-    return render_template('index.html', social_links=SOCIAL_LINKS)
+    with get_session() as session:
+        activities = session.query(Activity).order_by(Activity.event_date.desc()).all()
+
+    return render_template('index.html', social_links=SOCIAL_LINKS, activities=activities)
 
 
 @app.route('/assets/<path:filename>')

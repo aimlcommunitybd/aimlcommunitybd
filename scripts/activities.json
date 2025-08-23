@@ -1,0 +1,34 @@
+[
+  {
+    "category": "webinar",
+    "image_url": "assets/img/activities/3rd_mlsat.jpg",
+    "title": "3rd ML SATURDAY",
+    "description": "Live Q&A Session of June 2025",
+    "youtube_link": "https://youtu.be/7JNQVG9mynE?si=HVsU2Qd5IpfDEtqm",
+    "event_date": "2025-07-19"
+  },
+  {
+    "category": "workshop",
+    "image_url": "assets/img/activities/workshop-genai-may25.jpg",
+    "title": "Generative AI Workshop",
+    "description": "",
+    "youtube_link": "",
+    "event_date": "2025-05-24"
+  },
+  {
+    "category": "webinar",
+    "image_url": "assets/img/activities/mlsat-may25.jpg",
+    "title": "2nd ML SATURDAY",
+    "description": "Live Q&A Session of May 2025",
+    "youtube_link": "https://youtu.be/YMMlU8y4PH4?si=HnGjpNE6KywrrzM7",
+    "event_date": "2025-05-10"
+  },
+  {
+    "category": "webinar",
+    "image_url": "assets/img/activities/mlsat-april25.jpg",
+    "title": "ML SATURDAY",
+    "description": "Live Q&A Session of April 2025",
+    "youtube_link": "https://youtu.be/R6vQsMj89EI?si=IoM1NKQ3chnZc7E0",
+    "event_date": "2025-04-12"
+  }
+]

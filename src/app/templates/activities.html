@@ -1,0 +1,50 @@
+  <!-- ACTIVITIES START -->
+  <section id="portfolio" class="portfolio section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+      <span>Activities</span>
+      <h2>Our Activities</h2>
+      <p>
+        We host regular events to foster hands-on learning, professional development, and community collaboration in the AI/ML space.
+      </p>
+      </div><!-- End Section Title -->
+
+      <div class="container">
+
+      <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+
+          <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+          <li data-filter="*" class="filter-active">All</li>
+          <li data-filter=".filter-upcoming">Upcoming</li>
+          <li data-filter=".filter-webinar">Webinars</li>
+          <li data-filter=".filter-workshop">Workshops</li>
+          <!-- <li data-filter=".filter-others">Others</li> -->
+          </ul>
+          <!-- End Portfolio Filters -->
+
+          <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+            {% for activity in activities %}
+              {% if activity.is_upcoming  %}
+                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-upcoming">
+              {% elif activity.category=='webinar' %}
+                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-webinar">
+              {% else %}
+                  <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-workshop">
+              {% endif %}
+                <img src="{{ activity.image_url }}" loading="lazy" class="img-fluid" alt="">
+                <div class="portfolio-info">
+                  <h4>{{ activity.title }}</h4>
+                  <p>{{ activity.description }}</p>
+                  <a href="{{ activity.image_url }}"  loading="lazy" title="{{ activity.description }}" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                  <a href="{{ activity.youtube_link }}" title="Watch Now" class="details-link" target="_blank"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- End Portfolio Container -->
+           
+      </div>
+      </div>
+  </section>
+  <!-- ACTIVITIES END -->

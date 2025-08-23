@@ -1,20 +1,18 @@
-from app.db import get_session, init_db
-from app.models import User
+import structlog
 
-init_db()
+from scripts import setup_path
+setup_path()
 
+from app.db import init_db
+from scripts.populate_admin import populate_admin
+from scripts.populate_activities import populate_activities
 
-def populate_admin():
-    with get_session() as session:
-        user = User(email="admin@community.com")
-        user.set_password("secret")
-        user.is_admin = True
-        user.active = True
-        session.add(user)
-        session.commit()
-        print(f"Admin user: {user} created with email: {user.email}")
-
+logger = structlog.get_logger(__name__)
 
 if __name__ == "__main__":
+    logger.info("-------------Starting development setup-------------")
+    logger.info("Initializing database...")
+    init_db()
     populate_admin()
-    print("Admin user created")
+    populate_activities()
+    logger.info("-------------Development setup completed successfully-------------")

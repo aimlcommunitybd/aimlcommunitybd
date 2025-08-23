@@ -97,7 +97,15 @@
   bottom: 20px;
 }
 
-
+.portfolio .portfolio-item .portfolio-info .event-date {
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  padding-right: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
 /*--------------------------------------------------------------
 # Portfolio Details Section

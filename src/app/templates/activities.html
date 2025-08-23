@@ -34,10 +34,23 @@
               {% endif %}
                 <img src="{{ activity.image_url }}" loading="lazy" class="img-fluid" alt="">
                 <div class="portfolio-info">
+                  {% if activity.event_date %}
+                    <div class="event-date">{{ activity.event_date.strftime('%b %d, %Y') }}</div>
+                  {% endif %}
                   <h4>{{ activity.title }}</h4>
                   <p>{{ activity.description }}</p>
                   <a href="{{ activity.image_url }}"  loading="lazy" title="{{ activity.description }}" data-gallery="portfolio-gallery-app" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                  <a href="{{ activity.youtube_link }}" title="Watch Now" class="details-link" target="_blank"><i class="bi bi-youtube"></i></a>
+                  
+                  {% if activity.youtube_link %}
+                    <a href="{{ activity.youtube_link }}" title="Watch Now" class="details-link" target="_blank">
+                      <i class="bi bi-youtube"></i>
+                    </a>
+                  {% else %}
+                    <span class="details-link disabled" title="No video available">
+                      <i class="bi bi-youtube"></i>
+                    </span>
+                  {% endif %}
+
                 </div>
             </div>
             {% endfor %}

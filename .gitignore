@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # DB Manupulation
-# .data/
+.data/
 
 # Distribution / packaging
 .Python

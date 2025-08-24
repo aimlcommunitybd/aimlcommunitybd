@@ -81,10 +81,16 @@ def health():
     return "OK", 200
 
 
-@app.route("/coc")
+@app.route("/coc/")
 def coc():
     return redirect("https://github.com/aimlcommunitybd/public-docs/blob/main/legal/code-of-conduct.md")
     # return render_template("legal/code-of-conduct.html")
+
+@app.route("/blog/")
+def blog():
+    blog_url = "https://aimlcommunitybd.hashnode.dev/"
+    return redirect(blog_url)
+
 
 # --------------------------
 # Admin and Authentication
@@ -234,7 +240,7 @@ def update_activity(activity_id):
             img_file = image
             image_url = save_uploaded_file(img_file) if img_file else None
             if image_url and activity.image_url:
-                old_file_path = activity.image_url[1:]
+                old_file_path = f"{settings.BASE_DIR}/{activity.image_url}"
                 if os.path.exists(old_file_path):
                     os.remove(old_file_path)
                 activity.image_url = image_url
@@ -292,6 +298,6 @@ def delete_activity(activity_id):
 
 if __name__ == "__main__":
     init_db()  # Initialize the database
-    port = int(os.getenv("PORT", 5000))
+    port = int(os.getenv("PORT", 10000))
     print(f"---------Starting app on port {port}-------------")
     app.run(debug=True, host="0.0.0.0", port=port)

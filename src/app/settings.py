@@ -10,7 +10,7 @@ logger = structlog.get_logger(__name__)
 # Load env variables
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-DATABASE_DIR = os.getenv("DATABASE_DIR", "data")
+DATABASE_DIR = os.getenv("DATABASE_DIR", ".data")
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DATABASE_DIR}/database.db")
 PORT = int(os.getenv("PORT", 10000))
 BASE_DIR = os.getenv("BASE_DIR", "src/app/")

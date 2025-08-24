@@ -22,7 +22,7 @@ from sqlmodel import select, update
 
 from app.db import get_session, init_db
 from app.models import Activity, User, ActivityCategory
-from app.utils import save_uploaded_file, format_event_date
+from app.utils import save_uploaded_file, format_event_date, delete_file
 from app import settings
 
 
@@ -238,12 +238,10 @@ def update_activity(activity_id):
                 flash("Activity not found", "error")
                 return redirect(url_for("admin_dashboard"))
             img_file = image
-            image_url = save_uploaded_file(img_file) if img_file else None
-            if image_url and activity.image_url:
-                old_file_path = f"{settings.BASE_DIR}/{activity.image_url}"
-                if os.path.exists(old_file_path):
-                    os.remove(old_file_path)
-                activity.image_url = image_url
+            if img_file:
+                new_image_url = save_uploaded_file(img_file)
+                delete_file(activity.image_url)
+                activity.image_url = new_image_url
             
             if event_date:
                 event_date = format_event_date(

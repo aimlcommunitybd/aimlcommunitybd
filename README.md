@@ -4,7 +4,7 @@ git clone https://github.com/aimlcommunitybd/aimlcommunitybd.git
 cd aimlcommunitybd
 cp .env.example .env
 
-make rm-db # destry the db
+uv sync
 make dev # setup new db
 make server
 ```

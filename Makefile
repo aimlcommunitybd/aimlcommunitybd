@@ -9,7 +9,5 @@ server:
 	PYTHONPATH=src gunicorn -w 4 -b 0.0.0.0:$(PORT) app.main:app
 
 dev:
+	rm -rf $(DATABASE_DIR) && \
 	PYTHONPATH=. uv run python scripts/setup.py
-
-rm-db:
-	rm -r data/database.db -f

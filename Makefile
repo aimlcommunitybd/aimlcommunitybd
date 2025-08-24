@@ -12,4 +12,4 @@ dev:
 	PYTHONPATH=. uv run python scripts/setup.py
 
 rm-db:
-	rm -r database.db -f
+	rm -r data/database.db -f

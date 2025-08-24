@@ -105,8 +105,13 @@
                         {% endif %}
 
                         {% if activity.youtube_link %}
-                        <br><small style="color:#666;">{{ activity.youtube_link[:80] }}{% if activity.youtube_link|length > 80 %}...{% endif %}</small>
+                        <br><small style="color:#666;"> YT: {{ activity.youtube_link[:80] }}{% if activity.youtube_link|length > 80 %}...{% endif %}</small>
                         {% endif %}
+
+                        {% if activity.image_url %}
+                        <br><small style="color:#666;"> File: {{ activity.image_url[:80] }}{% if activity.image_url|length > 80 %}...{% endif %}</small>
+                        {% endif %}
+
                     </td>
                     <td><span style="background:#e3f2fd;padding:4px 8px;border-radius:12px;font-size:12px;">{{ activity.category.title() }}</span></td>
                     <td>{{ activity.event_date }}</td>

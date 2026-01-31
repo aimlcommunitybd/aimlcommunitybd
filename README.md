@@ -67,7 +67,7 @@ aimlcommunitybd/
 ## 🤝 Contributing
 
 1. Clone the repo to your local (or Fork the repo first then clone) 
-2. Create a new branch using `git checkout -b <branch-name>  
+2. Create a new branch using `git checkout -b <branch-name>`  
 3. Develop or Fix on your new branch, commit your changes and push.   
 4. Then submit a Pull Request with detailed description  
 

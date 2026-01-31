@@ -28,16 +28,16 @@
               <!-- filter tagging -->
               {% if activity.is_upcoming  %}
                 <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-upcoming">
-              {% elif activity.category=='webinar' %}
-                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-webinar">
+              {% elif activity.category=='workshop' %}
+                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-workshop">
               {% else %}
-                  <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-workshop">
+                  <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-webinar">
               {% endif %}
               <!-- End filter tagging -->
                 <img src="{{ activity.image_url }}" loading="lazy" class="img-fluid" alt="">
                 <div class="portfolio-info">
                   {% if activity.event_date %}
-                    <div class="event-date">{{ activity.event_date.strftime('%b %d, %Y') }}</div>
+                    <div class="event-date">{{ activity.event_date }}</div>
                   {% endif %}
                   <h4>{{ activity.title }}</h4>
                   <p>{{ activity.description }}</p>

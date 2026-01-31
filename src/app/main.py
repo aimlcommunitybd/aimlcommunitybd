@@ -48,10 +48,12 @@ def home():
     """
     now = datetime.now()
     activities = get_online_db_table(table_name="activities", order_by="event_date")
+    team_members = get_online_db_table(table_name="team", order_by="joining_date", desc=False)
     return render_template(
         "index.html", 
         social_links=get_social_links(), 
         activities=activities,
+        team_members=team_members,
     )
 
 
@@ -84,6 +86,7 @@ def get_social_links():
         "whatsapp": "https://whatsapp.com/channel/0029VbAf0s70rGiMzJfG4u2B", 
         "github": "https://github.com/pythonbangladesh",
     }
+
 
 
 # --------------------------

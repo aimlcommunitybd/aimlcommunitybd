@@ -1,4 +1,4 @@
-
+# Supabase Flask Doc: https://supabase.com/docs/guides/getting-started/quickstarts/flask
 
 import structlog
 from dotenv import load_dotenv
@@ -15,11 +15,20 @@ supabase: Client = create_client(
 logger = structlog.get_logger(__name__)
 
 
-def get_online_db_table(table_name: str):
-    """Fetch all records from a Supabase table."""
+def get_online_db_table(table_name: str, order_by: str=None, desc: bool=True):
+    """Fetch all records from a Supabase table.
+    
+    Args:
+        table_name (str): Name of the Supabase table to fetch data from.
+        order_by (str, optional): Column name to order the results by. Defaults to None.
+        desc (bool, optional): Whether to order in descending order. Defaults to True.
+    """
     try:
         logger.info(f"Fetching data from Supabase table: {table_name}")
-        response = supabase.table(table_name).select("*").execute()
+        query = supabase.table(table_name).select("*")
+        if order_by:
+            query = query.order(order_by, desc=desc)
+        response = query.execute()
         logger.info(f"Fetched data from Supabase table: {table_name}", response=response)
         return response.data
     except Exception as e:

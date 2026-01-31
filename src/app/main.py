@@ -21,6 +21,7 @@ from datetime import datetime
 from sqlmodel import select, update
 
 from app.db import get_session, init_db
+from app.supabasedb import get_online_db_table
 from app.models import Activity, User, ActivityCategory
 from app.utils import save_uploaded_file, format_event_date, delete_file
 from app import settings
@@ -41,33 +42,12 @@ logger = structlog.get_logger(__name__)
 @app.route("/")
 def home():
     now = datetime.now()
-    SOCIAL_LINKS = {
-        "linkedin": "https://www.linkedin.com/company/python-bangladesh/",
-        "discord": "https://discord.gg/sR52eYRFba",
-        "whatsapp": "https://whatsapp.com/channel/0029VbAf0s70rGiMzJfG4u2B", 
-        "github": "https://github.com/pythonbangladesh",
-    }
-    
-    with get_session() as session:
-        # Update past events in bulk
-        result = session.exec(
-            update(Activity)
-            .where(Activity.event_date <= now)
-            .where(Activity.is_upcoming == True)
-            .values(is_upcoming=False)
-        )
-        # Only commit if something was actually updated
-        if result.rowcount > 0:
-            session.commit()
-            logger.info(f"Updated {result.rowcount} activities to past status")
-        
-        
-        activities = session.exec(
-            select(Activity).order_by(Activity.event_date.desc())
-        ).all()
-    
+    activities = get_online_db_table("activities")
+    social_links = get_social_links
     return render_template(
-        "index.html", social_links=SOCIAL_LINKS, activities=activities
+        "index.html", 
+        social_links=social_links, 
+        activities=activities,
     )
 
 
@@ -86,10 +66,20 @@ def coc():
     return redirect("https://github.com/aimlcommunitybd/public-docs/blob/main/legal/code-of-conduct.md")
     # return render_template("legal/code-of-conduct.html")
 
+
 @app.route("/blog/")
 def blog():
     blog_url = "https://aimlcommunitybd.hashnode.dev/"
     return redirect(blog_url)
+
+
+def get_social_links():
+    return {
+        "linkedin": "https://www.linkedin.com/company/python-bangladesh/",
+        "discord": "https://discord.gg/sR52eYRFba",
+        "whatsapp": "https://whatsapp.com/channel/0029VbAf0s70rGiMzJfG4u2B", 
+        "github": "https://github.com/pythonbangladesh",
+    }
 
 
 # --------------------------

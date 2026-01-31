@@ -18,6 +18,10 @@ ACTIVITY_IMG_FOLDER = os.getenv("ACTIVITY_IMG_FOLDER", "assets/img/activities")
 ADMIN_EMAIL=os.getenv("ADMIN_EMAIL", "admin@community.com")
 ADMIN_PASSWORD=os.getenv("ADMIN_PASSWORD", "secret")
 
+# DATABASE settings
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
 # Img settings
 ALLOWED_IMG_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 MAX_IMG_SIZE = 16 * 1024 * 1024  # 16MB max file size

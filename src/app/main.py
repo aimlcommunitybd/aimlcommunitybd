@@ -48,14 +48,12 @@ def home():
     """
     now = datetime.now()
     activities = get_online_db_table(table_name="activities", order_by="event_date")
-
-    leaders, volunteers = get_team_data()
+    team_members = get_online_db_table(table_name="team", order_by="joining_date", desc=False)
     return render_template(
         "index.html", 
         social_links=get_social_links(), 
         activities=activities,
-        leaders=leaders,
-        volunteers=volunteers
+        team_members=team_members,
     )
 
 
@@ -88,95 +86,6 @@ def get_social_links():
         "whatsapp": "https://whatsapp.com/channel/0029VbAf0s70rGiMzJfG4u2B", 
         "github": "https://github.com/pythonbangladesh",
     }
-
-
-
-def get_team_data():
-    leaders_data = [
-        {
-            "name": "Md. Taufiqul Haque Khan Tusar",
-            "role": "NLP & Backend Engineer at LaLoka Labs, Tokyo, Japan | Community Admin",
-            "image": "taufiq.jpg",
-            "linkedin": ""
-        },
-        {
-            "name": "Sajib Hossain",
-            "role": "Lead Artificial Intelligence Engineer at TulipTech, Dhaka, Bangladesh",
-            "image": "sajib.jpg",
-            "linkedin": "https://www.linkedin.com/in/sajib-hossain-b189ba189/"
-        },
-        {
-            "name": "Md Sultanul Islam Ovi",
-            "role": "PhD Scholar at Dept. of CS, George Mason University, Virginia, USA",
-            "image": "ovi.jpg",
-            "linkedin": "https://www.linkedin.com/in/md-sultanul-islam-ovi/"
-        },
-        {
-            "name": "Kazi Junaid Mahmud",
-            "role": "Marketing Data Analyst, Talent Care Education Ltd, London, UK",
-            "image": "junaid.jpg",
-            "linkedin": "https://www.linkedin.com/in/junaid-mahmud/"
-        },
-        {
-            "name": "Md. Abdur Rakib Mollah",
-            "role": "Machine Learning Engineer, Euclido, Ontario, Canada",
-            "image": "rakib.jpg",
-            "linkedin": "https://www.linkedin.com/in/abdurrakibmollah/"
-        },
-        {
-            "name": "Majidul Islam",
-            "role": "AI Programmer at Sysnova Information Systems Ltd, Dhaka, Bangladesh",
-            "image": "majid.jpg",
-            "linkedin": "https://www.linkedin.com/in/majidulislammurad/"
-        },
-        {
-            "name": "Mansura Naznine",
-            "role": "Research Assistant, Qatar University, Doha, Qatar",
-            "image": "mansura.jpg",
-            "linkedin": "https://www.linkedin.com/in/mansura-naznine/"
-        },
-        {
-            "name": "Md Abdullah Al Hasib",
-            "role": "Artificial Intelligence Developer, Creative AI, Amman, Jordan",
-            "image": "hasib.jpg",
-            "linkedin": "https://www.linkedin.com/in/md-abdullah-al-hasib-874174194/"
-        },
-        {
-            "name": "Md Hasnain Ali",
-            "role": "Associate Software Engineer at Vivasoft Ltd, Dhaka, Bangladesh",
-            "image": "hasnain.jpg",
-            "linkedin": "https://www.linkedin.com/in/mdhasnainali/"
-        }
-    ]
-
-    volunteers_data = [
-        {
-            "name": "Mehedi Hasan Shihab",
-            "role": "ML Engineer (Intern) at Bondstain Technology Ltd., Bangladesh",
-            "image": "shihab.jpg",
-            "linkedin": "https://www.linkedin.com/in/shihab24/"
-        },
-        {
-            "name": "An Naser Nabil",
-            "role": "Freelance Content Writer at Prothom Alo and Earki",
-            "image": "nabil.jpg",
-            "linkedin": "https://www.linkedin.com/in/ann-naser-nabil/"
-        },
-        {
-            "name": "Towfiqur Rashid",
-            "role": "Undergradute Student at Dept. of Urban & Regional Planning, RUET, Bangladesh",
-            "image": "towfik.jpg",
-            "linkedin": "https://www.linkedin.com/in/towfiqur-rashid/"
-        },
-        {
-            "name": "Sushomoy Nandi",
-            "role": "Undergradute Student at Dept. of CSE, NITER, Bangladesh",
-            "image": "sushmoy.jpg",
-            "linkedin": "https://www.linkedin.com/in/sushmoy-nandi-737b41307/"
-        }
-    ]
-    
-    return leaders_data, volunteers_data
 
 
 

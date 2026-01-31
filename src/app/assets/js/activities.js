@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadMoreBtn = document.getElementById('load-more-btn');
     const loadMoreContainer = document.getElementById('load-more-container');
     let maxItemsForAll = 6; // Initial limit
-    const incrementBy = 6; // Load 9 more each time
+    const incrementBy = 6; // Load 6 more each time
     
     if (portfolioContainer) {
         const allItems = portfolioContainer.querySelectorAll('.isotope-item');

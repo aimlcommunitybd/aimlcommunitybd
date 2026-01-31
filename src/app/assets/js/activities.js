@@ -1,14 +1,19 @@
-// 1. First, include Isotope.js in your HTML head section or before closing body tag:
-// <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
-
-// 2. Add this JavaScript code after the DOM is loaded:
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Isotope
     const portfolioContainer = document.querySelector('.isotope-container');
     const portfolioFilters = document.querySelectorAll('.isotope-filters li');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    let maxItemsForAll = 6; // Initial limit
+    const incrementBy = 6; // Load 9 more each time
     
     if (portfolioContainer) {
-        // Initialize Isotope
+        const allItems = portfolioContainer.querySelectorAll('.isotope-item');
+        const totalItems = allItems.length;
+        
+        allItems.forEach((item, index) => {
+            item.setAttribute('data-index', index + 1);
+        });
+
         const isotope = new Isotope(portfolioContainer, {
             itemSelector: '.isotope-item',
             layoutMode: 'masonry',
@@ -19,48 +24,65 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Filter items on button click
+        function filterItems(filterValue) {
+            if (filterValue === '*') {
+                isotope.arrange({
+                    filter: function(itemElem) {
+                        const index = parseInt(itemElem.getAttribute('data-index'));
+                        return index <= maxItemsForAll;
+                    }
+                });
+                
+                // Show/hide load more button
+                if (maxItemsForAll < totalItems) {
+                    loadMoreContainer.style.display = 'block';
+                } else {
+                    loadMoreContainer.style.display = 'none';
+                }
+            } else {
+                isotope.arrange({
+                    filter: filterValue
+                });
+                loadMoreContainer.style.display = 'none';
+            }
+        }
+
+        // Initial filter
+        filterItems('*');
+
+        // Filter on button click
         portfolioFilters.forEach(function(filter) {
             filter.addEventListener('click', function() {
-                // Remove active class from all filters
                 portfolioFilters.forEach(f => f.classList.remove('filter-active'));
-                
-                // Add active class to clicked filter
                 this.classList.add('filter-active');
                 
-                // Get filter value
                 const filterValue = this.getAttribute('data-filter');
                 
-                // Filter items
-                isotope.arrange({
-                    filter: filterValue === '*' ? '*' : filterValue
-                });
+                // Reset max items when switching filters
+                maxItemsForAll = 9;
+                
+                filterItems(filterValue);
             });
         });
 
-        // Layout after images load (optional but recommended)
+        // Load more functionality
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                maxItemsForAll += incrementBy;
+                filterItems('*');
+                
+                // Smooth scroll to newly loaded items
+                setTimeout(() => {
+                    const firstNewItem = portfolioContainer.querySelector(`[data-index="${maxItemsForAll - incrementBy + 1}"]`);
+                    if (firstNewItem) {
+                        firstNewItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+            });
+        }
+
         portfolioContainer.addEventListener('load', function() {
             isotope.layout();
         }, true);
     }
 });
-
-// Alternative implementation if you prefer jQuery (requires jQuery):
-/*
-$(document).ready(function() {
-    // Initialize Isotope
-    var $grid = $('.isotope-container').isotope({
-        itemSelector: '.isotope-item',
-        layoutMode: 'masonry'
-    });
-
-    // Filter items on button click
-    $('.isotope-filters li').on('click', function() {
-        $('.isotope-filters li').removeClass('filter-active');
-        $(this).addClass('filter-active');
-        
-        var filterValue = $(this).attr('data-filter');
-        $grid.isotope({ filter: filterValue });
-    });
-});
-*/

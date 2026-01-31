@@ -41,12 +41,16 @@ logger = structlog.get_logger(__name__)
 
 @app.route("/")
 def home():
+    """Serve the home page.
+    Fetch activities from db and social links.
+    Returns:
+        _renders index.html
+    """
     now = datetime.now()
-    activities = get_online_db_table("activities")
-    social_links = get_social_links
+    activities = get_online_db_table(table_name="activities", order_by="event_date")
     return render_template(
         "index.html", 
-        social_links=social_links, 
+        social_links=get_social_links(), 
         activities=activities,
     )
 

@@ -32,6 +32,7 @@
                 <h4>{{ member.name|title }}</h4>
                 <span><strong>{{ member.community_designation|title }}</strong></span>
                 <span>{{ member.professional_role }} at {{ member.organization }}</span>
+                <span>{{ member.organization_location }}</span>
                 <div class="social">
                   {% if member.linkedin_url %}
                   <a href="{{ member.linkedin_url }}"><i class="bi bi-linkedin"></i></a>

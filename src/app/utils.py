@@ -1,6 +1,7 @@
 from werkzeug.utils import secure_filename
 import os
 import uuid
+import csv
 from datetime import datetime
 import structlog
 from app import settings
@@ -47,3 +48,21 @@ def delete_file(file_path):
         return True
     logger.warning("File not found, cannot delete", file_path=file_path)
     return False
+
+
+def get_rows_from_csv(filename:str) -> list[dict]:
+    """
+    Convert Supabase CSV file to a list of row dictionaries.
+    It can be used during development and testing instead of connecting to Supabase.
+    
+    Args:
+        filename: Full path to the CSV file.
+        output_format: Python list format
+    
+    Returns:
+        List of dictionaries where each dictionary represents a row
+    """
+    with open(filename, 'r', encoding='utf-8') as file:
+        csv_reader = csv.DictReader(file)
+        rows = list(csv_reader)
+    return rows

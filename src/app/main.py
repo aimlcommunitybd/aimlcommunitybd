@@ -14,6 +14,7 @@ from flask_login import (
     logout_user,
     current_user,
 )
+from flask_caching import Cache
 
 import os
 import structlog
@@ -26,20 +27,28 @@ from app.models import Activity, User, ActivityCategory
 from app.utils import save_uploaded_file, format_event_date, delete_file
 from app import settings
 
+config = {
+    "DEBUG": settings.DEBUG,          # some Flask specific configs
+    "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
+    "CACHE_DEFAULT_TIMEOUT": 3600,  # 1 hour
+}
 
 app = Flask(__name__)
 app.secret_key = settings.SECRET_KEY
 app.config["DEBUG"] = settings.DEBUG
-# app.config['ACTIVITY_IMG_FOLDER'] = settings.ACTIVITY_IMG_FOLDER
+app.config.from_mapping(config)
+cache = Cache(app)
+
 app.config['MAX_IMG_SIZE'] = settings.MAX_IMG_SIZE
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
-# os.makedirs(app.config['ACTIVITY_IMG_FOLDER'], exist_ok=True)
+
 logger = structlog.get_logger(__name__)
 
 
 @app.route("/")
+@cache.cached(timeout=3600)
 def home():
     """Serve the home page.
     Fetch activities from db and social links.
@@ -88,6 +97,12 @@ def get_social_links():
     }
 
 
+@app.route("/refresh-cache/")
+def refresh_cache():
+    cache.clear()
+    # flash("Cache cleared successfully! Fresh data loaded.", "success")
+    logger.info("Cache cleared via /refresh-cache/ endpoint")
+    return redirect(url_for("home"))
 
 # --------------------------
 # Admin and Authentication

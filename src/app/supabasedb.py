@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 
 from app import settings
-
+from app.utils import get_rows_from_csv
 
 supabase: Client = create_client(
     settings.SUPABASE_URL,
@@ -24,15 +24,21 @@ def get_online_db_table(table_name: str, order_by: str=None, desc: bool=True):
         desc (bool, optional): Whether to order in descending order. Defaults to True.
     """
     try:
-        logger.info(f"Fetching data from Supabase table: {table_name}")
+        logger.info(f"[Supabase] Fetching data: {table_name}")
         query = supabase.table(table_name).select("*")
         if order_by:
             query = query.order(order_by, desc=desc)
         response = query.execute()
-        logger.info(f"Fetched data from Supabase table: {table_name}", response=response)
+        logger.info(f"[Supabase] Fetched data: {table_name}", response=response)
         return response.data
     except Exception as e:
-        logger.error(f"Exception occurred while fetching data from {table_name}: {str(e)}")
+        logger.error(f"[Supabase Exception] Table: {table_name} - Exc: {str(e)}")
+        # FIXME: This is a temp solution. We should populate dev db during setup instead.
+        try:
+            logger.warning(f"[Local Data] Fetching from CSV: {table_name}")
+            return get_rows_from_csv(f".data/{table_name}.csv") if not settings.PRODUCTION else []
+        except Exception as csv_exc:
+            logger.error(f"[Local Data Exception] Table: {table_name} - Exc: {str(csv_exc)}")
         return []
 
 

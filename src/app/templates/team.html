@@ -1,31 +1,32 @@
 <section id="team" class="team section">
+  {% set roles = [
+    {'id': 'mentor', 'title': 'Community Leaders'},
+    {'id': 'management', 'title': 'Community Team Leads'},
+    {'id': 'volunteer', 'title': 'Community Volunteers'}
+  ] %}
+
   <div class="container section-title" data-aos="fade-up">
     <span>Meet the Team</span>
     <h2>Meet the Team</h2>
-    <p>
-      We believe in community-first leadership where every member plays a role
-      in shaping our journey.
-    </p>
+    <p>We believe in community-first leadership where every member plays a role in shaping our journey.</p>
   </div>
 
-  
-  <div class="container">
+  {% for role in roles %}
+  <div class="container mt-5">
     <div class="container section-title" data-aos="fade-up">
-      <span>Community Leaders</span>
-      <h3>Community Leaders</h3>
+      <span>{{ role.title }}</span>
+      <h3>{{ role.title }}</h3>
     </div>
+    
     <div class="row gy-5">
-      {% for member in team_members %}
-        {% if member.community_role=='mentor' %}
+      {% set members = team_members | selectattr("community_role", "equalto", role.id) | list %}
+      
+      {% if members %}
+        {% for member in members %}
           <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
             <div class="member">
               <div class="pic">
-                <img
-                  src="{{ member.img_url }}"
-                  loading="lazy"
-                  class="img-fluid"
-                  alt="{{ member.name }}"
-                />
+                <img src="{{ member.img_url }}" loading="lazy" class="img-fluid" alt="{{ member.name }}" />
               </div>
               <div class="member-info">
                 <h4>{{ member.name|title }}</h4>
@@ -40,47 +41,13 @@
               </div>
             </div>
           </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-  </div>
-
-
-  <div class="container mt-5">
-    <div class="container section-title" data-aos="fade-up">
-      <span>Community Team Leads</span>
-      <h3>Community Team Leads</h3>
-    </div>
-    <div class="row gy-5">
-      {% for member in team_members %}
-      {% if member.community_role == 'management' %}
-          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="member">
-              <div class="pic">
-                <img
-                  src="{{ member.img_url }}"
-                  loading="lazy"
-                  class="img-fluid"
-                  alt="{{ member.name }}"
-                />
-              </div>
-              <div class="member-info">
-                <h4>{{ member.name }}</h4>
-                <span><strong>{{ member.community_designation|title }}</strong></span>
-                <span>{{ member.professional_role }} at {{ member.organization }}</span>
-                <span>{{ member.organization_location }}</span>
-                <div class="social">
-                  {% if member.linkedin_url %}
-                  <a href="{{ member.linkedin_url }}"><i class="bi bi-linkedin"></i></a>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center" data-aos="fade-up">
+          <p class="fst-italic text-muted">Stay tuned! Information for {{ role.title }} coming soon.</p>
+        </div>
       {% endif %}
-      {% endfor %}
     </div>
   </div>
-
-  
+  {% endfor %}
 </section>

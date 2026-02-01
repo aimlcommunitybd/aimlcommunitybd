@@ -1,0 +1,12 @@
+id,created_at,category,title,description,youtube_link,event_date,is_upcoming,image_url
+1,2026-01-31 09:16:52.63529+00,workshop,Workshop on AgenticAI 101: Building AI Agents Step by Step,,,2026-02-07,true,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/Workshop5_AgenticAI_07Feb2025.jpg
+2,2026-01-31 11:32:01.145969+00,workshop,Workshop on Data Wrangling Decisions with Ydata Profiling,,,2026-01-17,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/Workshop4_yData_17Jan25.jpg
+3,2026-01-31 11:34:02.485894+00,workshop,Workshop on Data Exploration with Pansas Profiling,,,2025-11-29,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/Workshop3_Pandas_29Nov25.jpg
+4,2026-01-31 11:35:01.545627+00,workshop,Workshop on Lifecycle of a Research Project,,,2025-10-25,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/workshop2_ResearchProjectLifecycle_25Oct25.jpg
+5,2026-01-31 11:36:37.011735+00,webinar,1st ML Saturday,,,2025-04-12,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/2nd_MLSAT_12APR25.jpg
+6,2026-01-31 11:38:02.136998+00,webinar,2nd ML Saturday,,,2025-05-10,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/1st_MLSAT_10MAY25.jpg
+7,2026-01-31 11:39:28.3353+00,webinar,3rd ML SAT,,,2025-07-19,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/3rdMLSAT_19JULY25.jpg
+8,2026-01-31 11:40:13.870407+00,webinar,4th ML Saturday,,,2025-08-30,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/4th_MLSAT_30AUG25.jpg
+9,2026-01-31 11:42:11.656672+00,webinar,5th ML Saturday,,,2025-09-27,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/5th_MLSAT_27Sep25.jpg
+10,2026-01-31 11:43:16.175128+00,webinar,6th ML Saturday,,,2026-02-07,true,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/6th_MLSAT_Feb26.jpg
+11,2026-01-31 11:57:28.361465+00,workshop,"Generative AI: Concepts, Models, and Application",,,2025-05-24,false,https://obljjmolbwpmtlrhjlhr.supabase.co/storage/v1/object/public/AIML%20Community%20Website%20Static/Workshop1_GenAI_12May25.jpg

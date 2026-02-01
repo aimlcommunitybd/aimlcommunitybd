@@ -28,7 +28,7 @@ from app.utils import save_uploaded_file, format_event_date, delete_file
 from app import settings
 
 config = {
-    "DEBUG": True,          # some Flask specific configs
+    "DEBUG": settings.DEBUG,          # some Flask specific configs
     "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
     "CACHE_DEFAULT_TIMEOUT": 3600,  # 1 hour
 }
@@ -97,6 +97,12 @@ def get_social_links():
     }
 
 
+@app.route("/refresh-cache/")
+def refresh_cache():
+    cache.clear()
+    # flash("Cache cleared successfully! Fresh data loaded.", "success")
+    logger.info("Cache cleared via /refresh-cache/ endpoint")
+    return redirect(url_for("home"))
 
 # --------------------------
 # Admin and Authentication

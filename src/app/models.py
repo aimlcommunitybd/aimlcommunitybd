@@ -1,7 +1,7 @@
 # models.py
 from sqlmodel import SQLModel, Field
+from sqlalchemy import Column, DateTime
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy import Column
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from enum import Enum
@@ -27,11 +27,10 @@ class User(SQLModel, UserMixin, table=True):
 
 
 class ActivityCategory(str, Enum):
-    # UPCOMING = "upcoming"
-    WEBINAR = "webinar"
-    WORKSHOP = "workshop"
-    COMPETITION = "competition"
-    MEETUP = "meetup"
+    webinar = "webinar"
+    workshop = "workshop"
+    competition = "competition"
+    meetup = "meetup"
 
 
 class Activity(SQLModel, table=True):
@@ -39,7 +38,7 @@ class Activity(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     category: ActivityCategory = Field(
-        default=ActivityCategory.WEBINAR, 
+        default=ActivityCategory.webinar, 
         sa_column=Column(SQLEnum(ActivityCategory))
     )
     image_url: str = Field(default="", max_length=255)
@@ -48,13 +47,13 @@ class Activity(SQLModel, table=True):
     youtube_link: Optional[str] = None
     event_date: Optional[datetime] = None
     is_upcoming: Optional[bool] = True
-    created: datetime = Field(default_factory=datetime.now)
+    created: datetime = Field(default_factory=datetime.now, sa_column=Column("created_at", DateTime))
 
 
 class TeamRole(str, Enum):
-    MENTOR = "mentor"
-    MANAGEMENT = "management"
-    VOLUNTEER = "volunteer"
+    mentor = "mentor"
+    management = "management"
+    volunteer = "volunteer"
 
 
 class TeamMember(SQLModel, table=True):
@@ -64,7 +63,7 @@ class TeamMember(SQLModel, table=True):
     name: str = Field(max_length=255)
     img_url: str = Field(max_length=255)
     community_role: TeamRole = Field(
-        default=TeamRole.VOLUNTEER,
+        default=TeamRole.volunteer,
         sa_column=Column(SQLEnum(TeamRole))
     )
     community_designation: str = Field(max_length=255)
@@ -73,4 +72,4 @@ class TeamMember(SQLModel, table=True):
     organization_location: str = Field(max_length=255)
     linkedin_url: Optional[str] = Field(default=None, max_length=255)
     joining_date: datetime = Field(default_factory=datetime.now)
-    created: datetime = Field(default_factory=datetime.now)
+    created: datetime = Field(default_factory=datetime.now, sa_column=Column("created_at", DateTime))

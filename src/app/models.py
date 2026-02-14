@@ -49,3 +49,28 @@ class Activity(SQLModel, table=True):
     event_date: Optional[datetime] = None
     is_upcoming: Optional[bool] = True
     created: datetime = Field(default_factory=datetime.now)
+
+
+class TeamRole(str, Enum):
+    MENTOR = "mentor"
+    MANAGEMENT = "management"
+    VOLUNTEER = "volunteer"
+
+
+class TeamMember(SQLModel, table=True):
+    __tablename__ = "team"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(max_length=255)
+    img_url: str = Field(max_length=255)
+    community_role: TeamRole = Field(
+        default=TeamRole.VOLUNTEER,
+        sa_column=Column(SQLEnum(TeamRole))
+    )
+    community_designation: str = Field(max_length=255)
+    professional_role: str = Field(max_length=255)
+    organization: str = Field(max_length=255)
+    organization_location: str = Field(max_length=255)
+    linkedin_url: Optional[str] = Field(default=None, max_length=255)
+    joining_date: datetime = Field(default_factory=datetime.now)
+    created: datetime = Field(default_factory=datetime.now)

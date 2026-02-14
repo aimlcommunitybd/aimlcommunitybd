@@ -256,17 +256,26 @@
         <!-- Team Table -->
         <div class="container mt-5">
           <h2 style="text-align: center">👥 Team Management</h2>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3>Team Members ({{ team_members|length }})</h3>
-            <div class="filter-group">
-              <label for="teamFilter" style="font-weight: bold; margin-right: 10px;">View Category:</label>
-              <select id="teamFilter" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
-                <option value="all">Show All Categories</option>
-                <option value="mentor">Community Leaders</option>
-                <option value="management">Team Leads</option>
-                <option value="volunteer">Volunteers</option>
-              </select>
+          <div style="display: flex; justify-content: space-between; align-items: center; ">
+            <div>
+              <h3>Team Members ({{ team_members|length }})</h3>
             </div>
+            <div style="display: flex; gap: 15px; align-items: center; justify-content: space-between;">
+              <div class="search-group">
+                <input type="text" id="teamSearch" placeholder="Search by name..." 
+                style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ccc; width: 250px;">
+              </div>
+
+              <div class="filter-group">
+                <select id="teamFilter" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                  <option value="all">Show All Categories</option>
+                  <option value="mentor">Community Leaders</option>
+                  <option value="management">Team Leads</option>
+                  <option value="volunteer">Volunteers</option>
+                </select>
+              </div>
+            </div>
+            
           </div>
           {% set roles = [
             {'id': 'mentor', 'title': 'Community Leaders (Mentors)'},
@@ -418,19 +427,44 @@
           }
         }
       });
-      // Dropdown Filter Logic
-      document.getElementById('teamFilter')?.addEventListener('change', function(e) {
-        const selectedRole = e.target.value;
+
+      // Search and Filter Logic
+      const teamSearch = document.getElementById('teamSearch');
+      const teamFilter = document.getElementById('teamFilter');
+
+      function filterTeam() {
+        const searchTerm = teamSearch.value.toLowerCase();
+        const selectedRole = teamFilter.value;
         const wrappers = document.querySelectorAll('.team-category-wrapper');
 
         wrappers.forEach(wrapper => {
-          if (selectedRole === 'all') {
-            wrapper.style.display = 'block';
-          } else {
-            wrapper.style.display = wrapper.getAttribute('data-role') === selectedRole ? 'block' : 'none';
-          }
+          const roleMatch = (selectedRole === 'all' || wrapper.getAttribute('data-role') === selectedRole);
+          const rows = wrapper.querySelectorAll('tbody tr:not(.edit-row)');
+          let hasVisibleRows = false;
+
+          rows.forEach(row => {
+            const name = row.querySelector('td:nth-child(3) strong').textContent.toLowerCase();
+            const nameMatch = name.includes(searchTerm);
+
+            if (roleMatch && nameMatch) {
+              row.style.display = 'table-row';
+              hasVisibleRows = true;
+            } else {
+              row.style.display = 'none';
+              const editRow = row.nextElementSibling;
+              if (editRow && editRow.classList.contains('edit-row')) {
+                editRow.style.display = 'none';
+              }
+            }
+          });
+
+          wrapper.style.display = (roleMatch && hasVisibleRows) ? 'block' : 'none';
         });
-      });
+      }
+
+      // Event Listeners
+      teamSearch.addEventListener('input', filterTeam);
+      teamFilter.addEventListener('change', filterTeam);
     </script>
 </body>
 </html>

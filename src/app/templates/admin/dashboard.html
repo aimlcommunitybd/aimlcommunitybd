@@ -248,6 +248,120 @@
             <p>Create your first activity using the form above.</p>
         </div>
         {% endif %}
+
+        <!-- Team Table -->
+         <div class="container mt-5">
+    <h3>👥 Team Members ({{ team_members|length }})</h3>
+    {% if team_members %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Photo</th>
+                <th>Name & Designation</th>
+                <th>Role</th>
+                <th>Organization</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in team_members %}
+            <tr>
+                <td><strong>#{{ member.id }}</strong></td>
+                <td>
+                    <img src="{{ member.img_url }}" alt="{{ member.name }}" class="activity-img" style="border-radius: 50%; width: 50px; height: 50px; object-fit: cover;">
+                </td>
+                <td>
+                    <strong>{{ member.name|title }}</strong><br>
+                    <small style="color:#5d5c5c;">{{ member.community_designation|title }}</small>
+                </td>
+                <td>
+                    <span style="background:#f1f8e9; padding:4px 8px; border-radius:12px; font-size:12px;">
+                        {{ member.community_role|title }}
+                    </span>
+                </td>
+                <td>
+                    <small>{{ member.professional_role }} at {{ member.organization }}</small><br>
+                    <small style="color:#666;">{{ member.organization_location }}</small>
+                </td>
+                <td>
+                    <div class="actions">
+                        <a href="#edit-team-{{ member.id }}" class="btn btn-warning js-edit-btn">Edit</a>
+                        <form method="POST" action="/admin/team/{{ member.id }}/delete" style="display:inline;" onsubmit="return confirm('Remove {{ member.name }} from the team?')">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+
+            <tr class="edit-row" id="edit-team-{{ member.id }}" style="display:none;">
+                <td colspan="6">
+                    <form method="POST" action="/admin/team/{{ member.id }}/update" enctype="multipart/form-data" class="update-form">
+                        <h4>✏️ Edit Team Member: {{ member.name }}</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" name="name" value="{{ member.name }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Community Role</label>
+                                <select name="community_role" required>
+                                    <option value="mentor" {% if member.community_role == 'mentor' %}selected{% endif %}>Mentor/Leader</option>
+                                    <option value="management" {% if member.community_role == 'management' %}selected{% endif %}>Management</option>
+                                    <option value="volunteer" {% if member.community_role == 'volunteer' %}selected{% endif %}>Volunteer</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Community Designation</label>
+                                <input type="text" name="community_designation" value="{{ member.community_designation }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>LinkedIn URL</label>
+                                <input type="url" name="linkedin_url" value="{{ member.linkedin_url or '' }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Professional Role</label>
+                                <input type="text" name="professional_role" value="{{ member.professional_role or '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Organization</label>
+                                <input type="text" name="organization" value="{{ member.organization or '' }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Organization Location</label>
+                                <input type="text" name="organization_location" value="{{ member.organization_location or '' }}">
+                            </div>
+                            <div class="form-group">
+                                <label>Update Photo</label>
+                                <input type="file" name="image" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                            <button type="button" class="btn btn-secondary js-cancel-btn" onclick="document.getElementById('edit-team-{{ member.id }}').style.display='none';">Cancel</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align:center; padding:40px; color:#999;">
+        <p>No team members found in the database.</p>
+    </div>
+    {% endif %}
+</div>
     </div>
 
     <script>

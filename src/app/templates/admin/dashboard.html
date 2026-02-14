@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="{{ url_for('assets', filename='css/dashboard.css') }}" rel="stylesheet">
 </head>
+
 <body>
     <div class="container">
         <h1>🛠️ Admin Dashboard</h1>
-        
+
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -23,182 +25,352 @@
         {% endif %}
         {% endwith %}
 
-        <!-- CREATE New Activity -->
-        <div class="add-form">
-            <h3>➕ Add New Activity</h3>
-            <form method="POST" action="/admin/activities/create" enctype="multipart/form-data">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="title">Title *</label>
-                        <input type="text" id="title" name="title" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="category">Category *</label>
-                        <select id="category" name="category" required>
-                            <option value="">Select Category</option>
-                            <option value="webinar">Webinar</option>
-                            <option value="workshop">Workshop</option>
-                            <option value="competition">Competition</option>
-                            <option value="meetup">Meetup</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description"></textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="event_date">Event Date & Time</label>
-                        <input type="datetime-local" id="event_date" name="event_date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="youtube_link">YouTube Link</label>
-                        <input type="url" id="youtube_link" name="youtube_link" placeholder="https://youtube.com/...">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="image">Upload Image</label>
-                    <input type="file" id="image" name="image" accept="image/*" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Add Activity</button>
-            </form>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('activities')">📅 Activities</button>
+            <button class="tab-btn" onclick="showTab('team')">👥 Team Members</button>
         </div>
-        <!-- End CREATE New Activity -->
 
-
-        <!-- Activities Table -->
-        <h3>📅 Activities ({{ activities|length }})</h3>
-        {% if activities %}
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Image</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Event Date</th>
-                    <th>Upcoming</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for activity in activities %}
-                <tr>
-                    <td><strong>#{{ activity.id }}</strong></td>
-                    <td>
-                        {% if activity.image_url %}
-                        <img src="{{ activity.image_url }}" alt="Activity" class="activity-img">
-                        {% else %}
-                        <div style="width:60px;height:60px;background:#eee;display:flex;align-items:center;justify-content:center;border-radius:4px;">📷</div>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <strong>{{ activity.title }}</strong>
-
-                        {% if activity.description %}
-                        <br><small style="color:#5d5c5c;">{{ activity.description[:80] }}{% if activity.description|length > 80 %}...{% endif %}</small>
-                        {% endif %}
-
-                        {% if activity.youtube_link %}
-                        <br><small style="color:#666;"> YT: {{ activity.youtube_link[:80] }}{% if activity.youtube_link|length > 80 %}...{% endif %}</small>
-                        {% endif %}
-
-                        {% if activity.image_url %}
-                        <br><small style="color:#666;"> File: {{ activity.image_url[:80] }}{% if activity.image_url|length > 80 %}...{% endif %}</small>
-                        {% endif %}
-
-                    </td>
-                    <td><span style="background:#e3f2fd;padding:4px 8px;border-radius:12px;font-size:12px;">{{ activity.category.title() }}</span></td>
-                    <td>{{ activity.event_date }}</td>
-                    <td>
-                        <span class="status-badge upcoming">{{ activity.is_upcoming }}</span>
-                    </td>
-                    <td>
-                        <div class="actions">
-                            <a href="#edit-{{ activity.id }}" class="btn btn-warning">Edit</a>
-                            <form method="POST" action="/admin/activities/{{ activity.id }}/delete" style="display:inline;" onsubmit="return confirm('Delete {{ activity.title }}?')">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+        <div id="activities-section" class="tab-content active">
+            <!-- CREATE New Activity -->
+            <div class="add-form">
+                <h3>➕ Add New Activity</h3>
+                <form method="POST" action="/admin/activities/create" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">Title *</label>
+                            <input type="text" id="title" name="title" required>
                         </div>
-                    </td>
-                </tr>
-                
-                <!-- Edit Form Row (Hidden by default, shown when Edit clicked) -->
-                <tr class="edit-row" id="edit-{{ activity.id }}" style="display:none;">
-                    <td colspan="7">
-                        <form method="POST" action="/admin/activities/{{ activity.id }}/update" enctype="multipart/form-data">
-                            <h4>✏️ Edit Activity</h4>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Title</label>
-                                    <input type="text" name="title" value="{{ activity.title }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Category</label>
-                                    <select name="category" required>
-                                        <option value="webinar" {% if activity.category.value == 'webinar' %}selected{% endif %}>Webinar</option>
-                                        <option value="workshop" {% if activity.category.value == 'workshop' %}selected{% endif %}>Workshop</option>
-                                        <option value="competition" {% if activity.category.value == 'competition' %}selected{% endif %}>Competition</option>
-                                        <option value="meetup" {% if activity.category.value == 'meetup' %}selected{% endif %}>Meetup</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea name="description">{{ activity.description or '' }}</textarea>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Event Date</label>
-                                    <input type="datetime-local" name="event_date" 
-                                           value="{{ activity.event_date }}">
-                                </div>
-                                <div class="form-group">
-                                    <label>YouTube Link</label>
-                                    <input type="url" name="youtube_link" value="{{ activity.youtube_link or '' }}">
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Update Image</label>
-                                <input type="file" name="image" accept="image/*">
-                                {% if activity.image_url %}<small>Current: {{ activity.image_url.split('/')[-1] }}</small>{% endif %}
-                            </div>
-                            
+                        <div class="form-group">
+                            <label for="category">Category *</label>
+                            <select id="category" name="category" required>
+                                <option value="">Select Category</option>
+                                {% for cat in ActivityCategory %}
+                                <option value="{{ cat.value }}">{{ cat.name.title() }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="event_date">Event Date & Time</label>
+                            <input type="datetime-local" id="event_date" name="event_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="youtube_link">YouTube Link</label>
+                            <input type="url" id="youtube_link" name="youtube_link"
+                                placeholder="https://youtube.com/...">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Upload Image</label>
+                        <input type="file" id="image" name="image" accept="image/*" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add Activity</button>
+                </form>
+            </div>
+
+            <!-- Activities Table -->
+            <h3>📅 Activities ({{ activities|length }})</h3>
+            {% if activities %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Event Date</th>
+                        <th>Upcoming</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in activities %}
+                    <tr>
+                        <td><strong>#{{ activity.id }}</strong></td>
+                        <td>
+                            {% if activity.image_url %}
+                            <img src="{{ activity.image_url }}" alt="Activity" class="activity-img">
+                            {% else %}
+                            <div
+                                style="width:60px;height:60px;background:#eee;display:flex;align-items:center;justify-content:center;border-radius:4px;">
+                                📷</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ activity.title }}</strong>
+                            {% if activity.description %}
+                            <br><small style="color:#5d5c5c;">{{ activity.description[:80] }}...</small>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge">{{ activity.category.value.title() }}</span></td>
+                        <td>{{ activity.event_date.strftime('%Y-%m-%d %H:%M') if activity.event_date else 'N/A' }}</td>
+                        <td>
+                            <span class="status-badge {{ 'upcoming' if activity.is_upcoming else 'past' }}">{{
+                                activity.is_upcoming }}</span>
+                        </td>
+                        <td>
                             <div class="actions">
-                                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
-                                <a href="#" onclick="document.getElementById('edit-{{ activity.id }}').style.display='none'; return false;" class="btn" style="background:#6c757d;color:white;">Cancel</a>
+                                <a href="#edit-activity-{{ activity.id }}" class="btn btn-warning edit-trigger">Edit</a>
+                                <form method="POST" action="/admin/activities/{{ activity.id }}/delete"
+                                    style="display:inline;" onsubmit="return confirm('Delete {{ activity.title }}?')">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
                             </div>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div style="text-align:center;padding:40px;color:#999;">
-            <h3>📭 No activities yet</h3>
-            <p>Create your first activity using the form above.</p>
+                        </td>
+                    </tr>
+
+                    <tr class="edit-row" id="edit-activity-{{ activity.id }}" style="display:none;">
+                        <td colspan="7">
+                            <form method="POST" action="/admin/activities/{{ activity.id }}/update"
+                                enctype="multipart/form-data">
+                                <h4>✏️ Edit Activity</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        <input type="text" name="title" value="{{ activity.title }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select name="category" required>
+                                            {% for cat in ActivityCategory %}
+                                            <option value="{{ cat.value }}" {% if activity.category==cat %}selected{%
+                                                endif %}>{{ cat.name.title() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea name="description">{{ activity.description or '' }}</textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Event Date</label>
+                                        <input type="datetime-local" name="event_date"
+                                            value="{{ activity.event_date.strftime('%Y-%m-%dT%H:%M') if activity.event_date else '' }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>YouTube Link</label>
+                                        <input type="url" name="youtube_link" value="{{ activity.youtube_link or '' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Update Image</label>
+                                    <input type="file" name="image" accept="image/*">
+                                </div>
+                                <div class="actions">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No activities yet.</p>
+            {% endif %}
         </div>
-        {% endif %}
+
+        <div id="team-section" class="tab-content" style="display:none;">
+            <!-- CREATE New Team Member -->
+            <div class="add-form">
+                <h3>👥 Add New Team Member</h3>
+                <form method="POST" action="/admin/team/create" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="community_role">Community Role *</label>
+                            <select id="community_role" name="community_role" required>
+                                <option value="">Select Role</option>
+                                {% for role in TeamRole %}
+                                <option value="{{ role.value }}">{{ role.name.title() }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="community_designation">Community Designation *</label>
+                            <input type="text" id="community_designation" name="community_designation"
+                                placeholder="e.g. Lead, Volunteer" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="professional_role">Professional Role *</label>
+                            <input type="text" id="professional_role" name="professional_role"
+                                placeholder="e.g. Software Engineer" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="organization">Organization *</label>
+                            <input type="text" id="organization" name="organization" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="organization_location">Location *</label>
+                            <input type="text" id="organization_location" name="organization_location"
+                                placeholder="e.g. Dhaka, Bangladesh" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="linkedin_url">LinkedIn URL</label>
+                            <input type="url" id="linkedin_url" name="linkedin_url"
+                                placeholder="https://linkedin.com/in/...">
+                        </div>
+                        <div class="form-group">
+                            <label for="team_image">Profile Image *</label>
+                            <input type="file" id="team_image" name="image" accept="image/*" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Member</button>
+                </form>
+            </div>
+
+            <!-- Team Table -->
+            <h3>👥 Team Members ({{ team_members|length }})</h3>
+            {% if team_members %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Role & Designation</th>
+                        <th>Professional</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in team_members %}
+                    <tr>
+                        <td><strong>#{{ member.id }}</strong></td>
+                        <td>
+                            <img src="{{ member.img_url }}" alt="{{ member.name }}" class="activity-img">
+                        </td>
+                        <td><strong>{{ member.name }}</strong></td>
+                        <td>
+                            <span class="badge">{{ member.community_role.value.title() }}</span><br>
+                            <small>{{ member.community_designation }}</small>
+                        </td>
+                        <td>
+                            <small>{{ member.professional_role }} at {{ member.organization }}</small>
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a href="#edit-member-{{ member.id }}" class="btn btn-warning edit-trigger">Edit</a>
+                                <form method="POST" action="/admin/team/{{ member.id }}/delete" style="display:inline;"
+                                    onsubmit="return confirm('Delete {{ member.name }}?')">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="edit-row" id="edit-member-{{ member.id }}" style="display:none;">
+                        <td colspan="6">
+                            <form method="POST" action="/admin/team/{{ member.id }}/update"
+                                enctype="multipart/form-data">
+                                <h4>✏️ Edit Team Member</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" name="name" value="{{ member.name }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Role</label>
+                                        <select name="community_role" required>
+                                            {% for role in TeamRole %}
+                                            <option value="{{ role.value }}" {% if member.community_role==role
+                                                %}selected{% endif %}>{{ role.name.title() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Designation</label>
+                                        <input type="text" name="community_designation"
+                                            value="{{ member.community_designation }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Professional Role</label>
+                                        <input type="text" name="professional_role"
+                                            value="{{ member.professional_role }}" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Organization</label>
+                                        <input type="text" name="organization" value="{{ member.organization }}"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Location</label>
+                                        <input type="text" name="organization_location"
+                                            value="{{ member.organization_location }}" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>LinkedIn URL</label>
+                                        <input type="url" name="linkedin_url" value="{{ member.linkedin_url or '' }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Update Photo</label>
+                                        <input type="file" name="image" accept="image/*">
+                                    </div>
+                                </div>
+                                <div class="actions">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary cancel-btn">Cancel</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No team members yet.</p>
+            {% endif %}
+        </div>
     </div>
 
     <script>
-        // Simple show/hide edit forms (minimal JS)
-        document.addEventListener('click', function(e) {
-            if (e.target.textContent === 'Edit') {
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName + '-section').style.display = 'block';
+            event.currentTarget.classList.add('active');
+        }
+
+        document.addEventListener('click', function (e) {
+            if (e.target.classList.contains('edit-trigger')) {
                 e.preventDefault();
-                const editRow = document.querySelector(e.target.getAttribute('href'));
+                const targetId = e.target.getAttribute('href').substring(1);
+                const editRow = document.getElementById(targetId);
                 editRow.style.display = editRow.style.display === 'none' ? 'table-row' : 'none';
+            }
+            if (e.target.classList.contains('cancel-btn')) {
+                e.target.closest('.edit-row').style.display = 'none';
             }
         });
     </script>
 </body>
+
 </html>

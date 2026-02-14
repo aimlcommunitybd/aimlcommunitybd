@@ -158,10 +158,12 @@ def admin_dashboard():
         activities = session.exec(
             select(Activity).order_by(Activity.event_date.desc())
         ).all()
+        team_members = get_online_db_table(table_name="team", order_by="joining_date", desc=False)
     return render_template(
         "admin/dashboard.html", 
         user=current_user, 
         activities=activities,
+        team_members=team_members
     )
 
 @app.route("/admin/activities/create", methods=["POST"])
@@ -305,6 +307,38 @@ def delete_activity(activity_id):
         flash(f"Error deleting activity: {str(e)}", "error")
     return redirect(url_for("admin_dashboard"))
 
+
+@app.route("/admin/team/create", methods=["POST"])
+@login_required
+def create_team_member():
+    name = request.form.get('name', '').strip()
+    community_role = request.form.get('community_role').strip()
+    community_designation = request.form.get('community_designation', '').strip()
+    professional_role = request.form.get('professional_role', '').strip()
+    organization = request.form.get('organization', '').strip()
+    organization_location = request.form.get('organization_location', '').strip()
+    linkedin_url = request.form.get('linkedin_url', '').strip()
+    image = request.files.get('image')
+
+
+@app.route("/admin/team/<int:id>/update", methods=["POST"])
+@login_required
+def update_team_member(id):
+    name = request.form.get('name', '').strip()
+    community_role = request.form.get('community_role').strip()
+    community_designation = request.form.get('community_designation', '').strip()
+    professional_role = request.form.get('professional_role', '').strip()
+    organization = request.form.get('organization', '').strip()
+    organization_location = request.form.get('organization_location', '').strip()
+    linkedin_url = request.form.get('linkedin_url', '').strip()
+    image = request.files.get('image')
+
+
+@app.route("/admin/team/<int:id>/delete", methods=["POST"])
+@login_required
+def delete_team_member(id):
+    pass 
+    
 
 if __name__ == "__main__":
     init_db()  # Initialize the database

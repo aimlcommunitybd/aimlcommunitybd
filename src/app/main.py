@@ -23,7 +23,7 @@ from sqlmodel import select, update
 
 from app.db import get_session, init_db
 from app.supabasedb import get_online_db_table
-from app.models import Activity, User, ActivityCategory
+from app.models import Activity, User, ActivityCategory, TeamMember, TeamRole
 from app.utils import save_uploaded_file, format_event_date, delete_file
 from app import settings
 
@@ -158,10 +158,16 @@ def admin_dashboard():
         activities = session.exec(
             select(Activity).order_by(Activity.event_date.desc())
         ).all()
+        team_members = session.exec(
+            select(TeamMember).order_by(TeamMember.joining_date.desc())
+        ).all()
     return render_template(
         "admin/dashboard.html", 
         user=current_user, 
         activities=activities,
+        team_members=team_members,
+        ActivityCategory=ActivityCategory,
+        TeamRole=TeamRole,
     )
 
 @app.route("/admin/activities/create", methods=["POST"])
@@ -294,15 +300,116 @@ def delete_activity(activity_id):
                 return redirect(url_for("admin_dashboard"))
             activity_title = activity.title
             if activity.image_url:
-                file_path = activity.image_url[1:]  # Remove leading slash
-                if os.path.exists(file_path):
-                    os.remove(file_path)
+                delete_file(activity.image_url)
             session.delete(activity)
             session.commit()
             flash(f"Activity '{activity_title}' deleted successfully!", "success")
             logger.warning("[DELETED] Activity", activity_id=activity_id, title=activity_title)
     except Exception as e:
         flash(f"Error deleting activity: {str(e)}", "error")
+    return redirect(url_for("admin_dashboard"))
+
+
+# ---------------------
+# Team CRUD
+# ---------------------
+
+@app.route("/admin/team/create", methods=["POST"])
+@login_required
+def create_team_member():
+    logger.info("[CREATE] New Team Member")
+    name = request.form.get('name', '').strip()
+    community_role = TeamRole(request.form.get('community_role'))
+    community_designation = request.form.get('community_designation', '').strip()
+    professional_role = request.form.get('professional_role', '').strip()
+    organization = request.form.get('organization', '').strip()
+    organization_location = request.form.get('organization_location', '').strip()
+    linkedin_url = request.form.get('linkedin_url', '').strip()
+    image = request.files.get('image')
+
+    try:
+        img_url = ""
+        if image:
+            img_url = save_uploaded_file(file=image, filename=name)
+
+        new_member = TeamMember(
+            name=name,
+            community_role=community_role,
+            community_designation=community_designation,
+            professional_role=professional_role,
+            organization=organization,
+            organization_location=organization_location,
+            linkedin_url=linkedin_url,
+            img_url=img_url,
+        )
+        with get_session() as session:
+            session.add(new_member)
+            session.commit()
+            flash(f"Team member '{new_member.name}' added successfully!", "success")
+            logger.info("[CREATED] New team member", id=new_member.id, name=new_member.name)
+    except Exception as e:
+        flash(f"Error adding team member: {str(e)}", "error")
+        logger.error("Error creating team member", error=str(e))
+
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/team/<int:member_id>/update", methods=["POST"])
+@login_required
+def update_team_member(member_id):
+    logger.info("[UPDATE] Team Member", member_id=member_id)
+    try:
+        with get_session() as session:
+            member = session.get(TeamMember, member_id)
+            if not member:
+                flash("Team member not found", "error")
+                return redirect(url_for("admin_dashboard"))
+
+            member.name = request.form.get('name', '').strip()
+            member.community_role = TeamRole(request.form.get('community_role'))
+            member.community_designation = request.form.get('community_designation', '').strip()
+            member.professional_role = request.form.get('professional_role', '').strip()
+            member.organization = request.form.get('organization', '').strip()
+            member.organization_location = request.form.get('organization_location', '').strip()
+            member.linkedin_url = request.form.get('linkedin_url', '').strip()
+
+            image = request.files.get('image')
+            if image and image.filename:
+                new_img_url = save_uploaded_file(image, filename=member.name)
+                if member.img_url:
+                    delete_file(member.img_url)
+                member.img_url = new_img_url
+
+            session.commit()
+            flash(f"Team member '{member.name}' updated successfully!", "success")
+            logger.info("[UPDATED] Team member", id=member.id)
+    except Exception as e:
+        flash(f"Error updating team member: {str(e)}", "error")
+        logger.error("Error updating team member", error=str(e))
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/admin/team/<int:member_id>/delete", methods=["POST"])
+@login_required
+def delete_team_member(member_id):
+    logger.info("[DELETE] Team Member", member_id=member_id)
+    try:
+        with get_session() as session:
+            member = session.get(TeamMember, member_id)
+            if not member:
+                flash("Team member not found", "error")
+                return redirect(url_for("admin_dashboard"))
+            
+            member_name = member.name
+            if member.img_url:
+                delete_file(member.img_url)
+            
+            session.delete(member)
+            session.commit()
+            flash(f"Team member '{member_name}' deleted successfully!", "success")
+            logger.warning("[DELETED] Team member", id=member_id, name=member_name)
+    except Exception as e:
+        flash(f"Error deleting team member: {str(e)}", "error")
     return redirect(url_for("admin_dashboard"))
 
 

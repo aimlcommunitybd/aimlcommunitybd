@@ -4,6 +4,40 @@
 `assets` - folder containing images, css, and js
 
 
+## How to Run locally
+
+### 1. Environment Setup
+- Install [uv](https://github.com/astral-sh/uv) if not already installed.
+- Create a `.env` file from `.env.example`:
+  ```bash
+  cp .env.example .env
+  ```
+- Update `DATABASE_URL` in `.env` (Use local SQLite or Supabase Postgres).
+
+### 2. Initialize Database & Admin
+Run this command to create tables and a default admin user:
+```powershell
+# Windows (PowerShell)
+$env:PYTHONPATH=".;src"
+uv run python scripts/setup.py
+```
+
+### 3. Run the Project
+Start the development server:
+```powershell
+# Windows (PowerShell)
+$env:PYTHONPATH=".;src"
+uv run python src/app/main.py
+```
+Open [http://localhost:10000](http://localhost:10000) in your browser.
+
+### 4. Admin Access
+- **URL**: `http://localhost:10000/login`
+- **Default Email**: `admin@test.com`
+- **Default Password**: `secret` (Check `.env` for `ADMIN_PASSWORD`)
+
+---
+
 ## Image optimization
 ```bash
 # Install on your local

@@ -312,32 +312,40 @@ def delete_activity(activity_id):
 @login_required
 def create_team_member():
     name = request.form.get('name', '').strip()
-    community_role = request.form.get('community_role').strip()
+    community_role = request.form.get('community_role', '').strip()
     community_designation = request.form.get('community_designation', '').strip()
     professional_role = request.form.get('professional_role', '').strip()
     organization = request.form.get('organization', '').strip()
     organization_location = request.form.get('organization_location', '').strip()
     linkedin_url = request.form.get('linkedin_url', '').strip()
     image = request.files.get('image')
+
+    flash("Not yet implemented.", "error")
+    return redirect(url_for("admin_dashboard"))
 
 
 @app.route("/admin/team/<int:id>/update", methods=["POST"])
 @login_required
 def update_team_member(id):
     name = request.form.get('name', '').strip()
-    community_role = request.form.get('community_role').strip()
+    community_role = request.form.get('community_role', '').strip()
     community_designation = request.form.get('community_designation', '').strip()
     professional_role = request.form.get('professional_role', '').strip()
     organization = request.form.get('organization', '').strip()
     organization_location = request.form.get('organization_location', '').strip()
     linkedin_url = request.form.get('linkedin_url', '').strip()
     image = request.files.get('image')
+    
+    flash("Not yet implemented.", "error")
+    return redirect(url_for("admin_dashboard"))
 
 
 @app.route("/admin/team/<int:id>/delete", methods=["POST"])
 @login_required
 def delete_team_member(id):
-    pass 
+    
+    flash("Not yet implemented.", "error")
+    return redirect(url_for("admin_dashboard"))
     
 
 if __name__ == "__main__":

@@ -1,23 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | AI/ML Community BD</title>
+    <link href="{{ url_for('assets', filename='css/dashboard.css') }}" rel="stylesheet">
 </head>
-<body>
-    <h2>Admin Login</h2>    
-    <form method="post">
-        <p>
-            <label>Email:</label><br>
-            <input name="email" type="email" required>
-        </p>
-        <p>
-            <label>Password:</label><br>
-            <input name="password" type="password" required>
-        </p>
-        <p>
-            <input type="submit" value="Login">
-        </p>
-    </form>
-    
+
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-header">
+            <h2 class="login-title">Admin Portal</h2>
+            <p class="login-subtitle">AI/ML Professional Community Bangladesh</p>
+        </div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('login') }}" method="POST" class="login-form">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" name="email" required class="form-input" placeholder="admin@aimlcommunity.bd">
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" required class="form-input" placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <div class="login-footer">
+            <a href="{{ url_for('login') }}" class="back-link">← Back to Community Site</a>
+        </div>
+    </div>
 </body>
 </html>

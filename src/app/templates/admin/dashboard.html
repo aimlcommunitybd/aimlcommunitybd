@@ -8,7 +8,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>🛠️ Admin Dashboard</h1>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+          <h1 style="margin: 0;">🛠️ Admin Dashboard</h1>
+          <a href="{{ url_for('logout') }}" class="btn btn-danger" 
+            style="background: #dc3545; color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold;"
+            onclick="return confirm('Are you sure you want to logout?')">
+            Logout
+          </a>
+        </div>
         
         <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -71,10 +78,70 @@
         <!-- End CREATE New Activity -->
 
 
+        <!-- CREATE/ADD New Member -->
+        <div class="add-form">
+          <h3>👤 Add New Team Member</h3>
+          <form method="POST" action="/admin/team/create" enctype="multipart/form-data">
+              
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" placeholder="e.g., Md. Taufiqul Haque Khan" required>
+              </div>
+              <div class="form-group">
+                <label for="community_role">Community Category *</label>
+                  <select id="community_role" name="community_role" required>
+                    <option value="mentor">Community Leader (Mentor)</option>
+                    <option value="management">Community Team Lead</option>
+                    <option value="volunteer">Community Volunteer</option>
+                  </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="community_designation">Community Designation *</label>
+                <input type="text" id="community_designation" name="community_designation" placeholder="e.g., Mentor" required>
+              </div>
+              <div class="form-group">
+                <label for="linkedin_url">LinkedIn Profile URL</label>
+                <input type="url" id="linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/in/...">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="professional_role">Professional Role</label>
+                <input type="text" id="professional_role" name="professional_role" placeholder="e.g., NLP & Backend Engineer">
+              </div>
+              <div class="form-group">
+                <label for="organization">Organization</label>
+                <input type="text" id="organization" name="organization" placeholder="e.g., LaLoka Labs">
+              </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                  <label for="organization_location">Organization Location</label>
+                  <input type="text" id="organization_location" name="organization_location" placeholder="e.g., Tokyo, Japan">
+                </div>
+                <div class="form-group">
+                  <label for="image">Profile Photo *</label>
+                  <input type="file" id="image" name="image" accept="image/*" required>
+                  <small style="color: #666;">Use a square aspect ratio for best results.</small>
+                </div>
+            </div>
+
+              <button type="submit" class="btn btn-primary">➕ Save Team Member</button>
+          </form>
+        </div>
+        <!-- End CREATE/ADD New Member -->
+
+
         <!-- Activities Table -->
         <h3>📅 Activities ({{ activities|length }})</h3>
         {% if activities %}
-        <table>
+        <table id="activitiesTable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -88,7 +155,7 @@
             </thead>
             <tbody>
                 {% for activity in activities %}
-                <tr>
+                <tr class="activity-row {% if loop.index > 5 %}d-none{% endif %}">
                     <td><strong>#{{ activity.id }}</strong></td>
                     <td>
                         {% if activity.image_url %}
@@ -182,23 +249,229 @@
                 {% endfor %}
             </tbody>
         </table>
-        {% else %}
-        <div style="text-align:center;padding:40px;color:#999;">
-            <h3>📭 No activities yet</h3>
-            <p>Create your first activity using the form above.</p>
+        {% if activities|length > 5 %}
+        <div id="loadMoreContainer">
+          <button id="loadMoreBtn" class="btn-load-more">Load More Activities</button>
         </div>
-        {% endif %}
+        {% endif %} {% else %}
+        <div style="text-align: center; padding: 40px; color: #999">
+          <h3>📭 No activities yet</h3>
+          <p>Create your first activity using the form above.</p>
+        </div>
+        {% endif %}    
+
+        <!-- Team Table -->
+        <div class="container mt-5">
+          <h2 style="text-align: center">👥 Team Management</h2>
+          <div style="display: flex; justify-content: space-between; align-items: center; ">
+            <div>
+              <h3>Team Members ({{ team_members|length }})</h3>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center; justify-content: space-between;">
+              <div class="search-group">
+                <input type="text" id="teamSearch" placeholder="Search by name..." 
+                style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ccc; width: 250px;">
+              </div>
+
+              <div class="filter-group">
+                <select id="teamFilter" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                  <option value="all">Show All Categories</option>
+                  <option value="mentor">Community Leaders</option>
+                  <option value="management">Team Leads</option>
+                  <option value="volunteer">Volunteers</option>
+                </select>
+              </div>
+            </div>
+            
+          </div>
+          {% set roles = [
+            {'id': 'mentor', 'title': 'Community Leaders (Mentors)'},
+            {'id': 'management', 'title': 'Community Team Leads'},
+            {'id': 'volunteer', 'title': 'Community Volunteers'} ] 
+          %}
+          {% for role in roles %}
+          <div class="team-category-wrapper" data-role="{{ role.id }}">
+            <h4 style="background: #f8f9fa; padding: 10px; border-left: 4px solid #007bff; margin-top: 30px;">
+              {{ role.title }}
+            </h4>
+            {% set members = team_members | selectattr("community_role", "equalto", role.id) | list %}
+
+            {% if members %}
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Photo</th>
+                  <th>Name & Designation</th>
+                  <th>Role</th>
+                  <th>Organization</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for member in members %}
+                <tr>
+                  <td><strong>#{{ member.id }}</strong></td>
+                  <td>
+                    <img src="{{ member.img_url }}" alt="{{ member.name }}" class="activity-img" style="border-radius: 50%; width: 50px; height: 50px; object-fit: cover;">
+                  </td>
+                  <td>
+                    <strong>{{ member.name|title }}</strong><br>
+                    <small style="color:#5d5c5c;">{{ member.community_designation|title }}</small>
+                  </td>
+                  <td>
+                    <span style="background:#f1f8e9; padding:4px 8px; border-radius:12px; font-size:12px;">
+                      {{ member.community_role|title }}
+                    </span>
+                  </td>
+                  <td>
+                    <small>{{ member.professional_role }} at {{ member.organization }}</small><br>
+                    <small style="color:#666;">{{ member.organization_location }}</small>
+                  </td>
+                  <td>
+                    <div class="actions">
+                      <a href="#edit-team-{{ member.id }}" class="btn btn-warning js-edit-btn">Edit</a>
+                      <form method="POST" action="/admin/team/{{ member.id }}/delete" style="display:inline;" onsubmit="return confirm('Remove {{ member.name }} from the team?')">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr class="edit-row" id="edit-team-{{ member.id }}" style="display:none;">
+                  <td colspan="6">
+                    <form method="POST" action="/admin/team/{{ member.id }}/update" enctype="multipart/form-data" class="update-form">
+                      <h4>✏️ Edit Team Member: {{ member.name }}</h4>
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>Full Name</label>
+                          <input type="text" name="name" value="{{ member.name }}" required>
+                        </div>
+                        <div class="form-group">
+                          <label>Community Role</label>
+                          <select name="community_role" required>
+                            <option value="mentor" {% if member.community_role == 'mentor' %}selected{% endif %}>Mentor/Leader</option>
+                            <option value="management" {% if member.community_role == 'management' %}selected{% endif %}>Management</option>
+                            <option value="volunteer" {% if member.community_role == 'volunteer' %}selected{% endif %}>Volunteer</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>Community Designation</label>
+                          <input type="text" name="community_designation" value="{{ member.community_designation }}" required>
+                        </div>
+                        <div class="form-group">
+                          <label>LinkedIn URL</label>
+                          <input type="url" name="linkedin_url" value="{{ member.linkedin_url or '' }}">
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>Professional Role</label>
+                          <input type="text" name="professional_role" value="{{ member.professional_role or '' }}">
+                        </div>
+                        <div class="form-group">
+                          <label>Organization</label>
+                          <input type="text" name="organization" value="{{ member.organization or '' }}">
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="form-group">
+                          <label>Organization Location</label>
+                          <input type="text" name="organization_location" value="{{ member.organization_location or '' }}">
+                        </div>
+                        <div class="form-group">
+                          <label>Update Photo</label>
+                          <input type="file" name="image" accept="image/*">
+                        </div>
+                      </div>
+
+                      <div class="actions">
+                        <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                        <button type="button" class="btn btn-secondary js-cancel-btn" onclick="document.getElementById('edit-team-{{ member.id }}').style.display='none';">Cancel</button>
+                      </div>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p style="padding: 10px; color: #888; font-style: italic;">No members in this category.</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
     </div>
 
     <script>
-        // Simple show/hide edit forms (minimal JS)
-        document.addEventListener('click', function(e) {
-            if (e.target.textContent === 'Edit') {
-                e.preventDefault();
-                const editRow = document.querySelector(e.target.getAttribute('href'));
-                editRow.style.display = editRow.style.display === 'none' ? 'table-row' : 'none';
+      document.addEventListener('click', function(e) {
+        // Handle Edit Toggle
+        if (e.target.textContent === 'Edit') {
+          e.preventDefault();
+          const editRow = document.querySelector(e.target.getAttribute('href'));
+          editRow.style.display = editRow.style.display === 'none' ? 'table-row' : 'none';
+        }
+
+        // Handle Load More Logic
+        if (e.target.id === 'loadMoreBtn') {
+          const hiddenRows = document.querySelectorAll('.activity-row.d-none');
+          const rowsToShow = 5;
+          
+          hiddenRows.forEach((row, index) => {
+            if (index < rowsToShow) {
+              row.classList.remove('d-none');
             }
+          });
+
+          // Hide the button if there are no more rows to show
+          if (document.querySelectorAll('.activity-row.d-none').length === 0) {
+            document.getElementById('loadMoreContainer').style.display = 'none';
+          }
+        }
+      });
+
+      // Search and Filter Logic
+      const teamSearch = document.getElementById('teamSearch');
+      const teamFilter = document.getElementById('teamFilter');
+
+      function filterTeam() {
+        const searchTerm = teamSearch.value.toLowerCase();
+        const selectedRole = teamFilter.value;
+        const wrappers = document.querySelectorAll('.team-category-wrapper');
+
+        wrappers.forEach(wrapper => {
+          const roleMatch = (selectedRole === 'all' || wrapper.getAttribute('data-role') === selectedRole);
+          const rows = wrapper.querySelectorAll('tbody tr:not(.edit-row)');
+          let hasVisibleRows = false;
+
+          rows.forEach(row => {
+            const name = row.querySelector('td:nth-child(3) strong').textContent.toLowerCase();
+            const nameMatch = name.includes(searchTerm);
+
+            if (roleMatch && nameMatch) {
+              row.style.display = 'table-row';
+              hasVisibleRows = true;
+            } else {
+              row.style.display = 'none';
+              const editRow = row.nextElementSibling;
+              if (editRow && editRow.classList.contains('edit-row')) {
+                editRow.style.display = 'none';
+              }
+            }
+          });
+
+          wrapper.style.display = (roleMatch && hasVisibleRows) ? 'block' : 'none';
         });
+      }
+
+      // Event Listeners
+      teamSearch.addEventListener('input', filterTeam);
+      teamFilter.addEventListener('change', filterTeam);
     </script>
 </body>
 </html>
